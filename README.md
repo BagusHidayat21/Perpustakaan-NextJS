@@ -15,7 +15,6 @@ This application provides a complete solution for library management, including:
 
 ### Frontend
 - Next.js
-- 
 - Tailwind CSS
 - React Query
 - Axios
