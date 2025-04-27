@@ -41,12 +41,11 @@ const createUser = async (req, res) => {
         const { full_name, email, password } = req.body;
         const hashedPassword = await bycrpt.hash(password, 10);
         const data = await UserModel.createUser({ full_name, email, hashedPassword });
-        const token = 
+        
         res.status(201).json({
             "status": 201,
             "message": "Berhasil Menambahkan Data User",
-            "data": data,
-            "token": token
+            "data": data
         });
     } catch (error) {
         if (error.code === "23505") {
@@ -144,6 +143,29 @@ const deleteUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+
+    
+};
+
+const refreshTokenHandler = (req, res) => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+        return res.status(401).json({ message: "Refresh token tidak ditemukan." });
+    }
+
+    jwt.verify(refreshToken, process.env.SECRET_KEY_REFRESH_TOKEN, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: "Refresh token tidak valid atau kadaluarsa." });
+        }
+
+        const newAccessToken = accessToken(user);
+
+        return res.status(200).json({
+            message: "Access token baru berhasil dibuat.",
+            accessToken: newAccessToken
+        });
+    });
 };
 
 module.exports = {
@@ -153,4 +175,5 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
+    refreshTokenHandler
 };

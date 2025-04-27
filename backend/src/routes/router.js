@@ -9,6 +9,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 router.post("/login", UserController.loginUser);
 router.post("/register", UserController.createUser);
+router.post("/token-refresh", UserController.refreshTokenHandler);
 
 router.get("/users",authMiddleware, UserController.getAllUsers);
 router.get("/users/:id", authMiddleware, UserController.getUserById);
